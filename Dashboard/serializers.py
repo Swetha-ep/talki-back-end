@@ -11,5 +11,4 @@ class AdminTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_id'] = user.id
         token['role'] = user.user_role
         token['is_staff'] = True
-
         return token

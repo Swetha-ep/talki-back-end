@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'social_django',
     'social.apps.django_app.default',
     'Dashboard',
+    'Trainer',
 ]
 
 SITE_ID = 1
