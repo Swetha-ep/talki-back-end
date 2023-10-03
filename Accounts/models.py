@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-
-
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -16,10 +14,18 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
+        
+        extra_fields.setdefault("is_active", True)
+        extra_fields.setdefault("is_staff ", True)
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("user_role", 'admin')
+
+        if extra_fields.get("is_active") is not True:
+            raise ValueError("Superuser must have is_active=True.")
+        if extra_fields.get("is_staff") is not True:
+            raise ValueError("Superuser must have is_staff=True.")
+
         return self.create_user(email, password, **extra_fields)
-    
 
 ROLE_CHOICES = [
     ('user', 'User'),
@@ -37,17 +43,14 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, blank=True)
     date_registered = models.DateTimeField(auto_now_add=True)
-    user_role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    user_role = models.CharField(max_length=10,default='user', choices=ROLE_CHOICES)
     is_vip = models.BooleanField(default=False)
     profile_picture = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.png', null=True, blank=True)
     user_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, blank=True)
     is_google = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    
-    # Field to store Google OAuth ID token
-    # google_id_token = models.TextField(blank=True, null=True)
-
+ 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
@@ -55,3 +58,18 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+    
+
+class TutorApplication(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    phone = models.CharField()  
+    about_me = models.TextField()
+    teaching_style = models.TextField()
+    work_experience = models.TextField()
+    education = models.TextField()
+    status = models.CharField(max_length=20, choices=[('pending', 'pending'), ('accepted', 'accepted'), ('declined', 'declined')], default='pending')
+
+    def __str__(self):
+        return self.name
+

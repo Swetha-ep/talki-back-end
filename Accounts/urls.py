@@ -2,7 +2,7 @@
 from django.urls import path,include
 from .views import *
 from rest_framework_simplejwt.views import TokenRefreshView
-from .views import MyTokenObtainPairView, UserRegister, Activate
+from .views import MyTokenObtainPairView, UserRegister, Activate, TutorApplicationCreateView
 from .import views
 from rest_framework.routers import DefaultRouter
 
@@ -15,5 +15,11 @@ urlpatterns = [
     path('auth/google/', views.google_oauth2_auth, name='google-oauth2-auth', kwargs={'backend': 'google-oauth2'}),
     path('users/', UserViewSet.as_view({'get': 'list'}), name='user-list'),
     path('users/<int:pk>/', UserViewSet.as_view({'get': 'retrieve'}), name='user-detail'),
+
+    path('submit-application/', TutorApplicationCreateView.as_view(), name='submit-tutor-application'),
+    path('check-previous-submission/', CheckPreviousSubmissionView.as_view(), name='check-previous-submission'),
+    
+    
+    
 ]
 

@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-&#uwr^i+w_&^z=(=4ww+uh3u+#_7g8d6_b!67+_mr%s7hjbzm=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -109,15 +109,12 @@ DATABASES = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True 
 
-CORS_ALLOWED_ORIGINS = [
-      
-    "http://localhost:3000", 
-    "http://10.4.3.163:3000", 
-      # Replace with your React app's production URL
+CORS_ALLOWED_ORIGINS = [ 
+    "http://localhost:3000",
+    'http://127.0.0.1:8000', 
 ]
 
-# Password validation
-# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
