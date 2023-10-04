@@ -1,8 +1,8 @@
 from urllib.parse import urlencode
 from django.shortcuts import render
-from .serializers import UserRegistrationSerializer, MyTokenObtainPairSerializer, TutorApplicationSerializer
+from .serializers import *
 from .models import User
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -117,42 +117,50 @@ def google_oauth2_auth(request, backend):
 
 
 
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
+class UserProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-
-
-
-
+   
+    
+ 
 
 class TutorApplicationCreateView(CreateAPIView):
-    def get_serializer_class(self):
-        return TutorApplicationSerializer
+    serializer_class = TutorApplicationSerializer
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
         
-        existing_application = TutorApplication.objects.filter(user=request.user).first()
-      
-        if existing_application:
-            return Response({'error': 'Tutor application already exists for this user.'}, status=status.HTTP_400_BAD_REQUEST)
-      
-        serializer = TutorApplicationSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            user = serializer.validated_data.get('user')
+
+            existing_application = TutorApplication.objects.filter(user_id=user).first()
+            
+            if existing_application:
+                return Response({'error': 'Tutor application already exists for this user.'}, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save()
             return Response({'message': 'Tutor application submitted successfully.'}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
+class TutorApplicationRetrieve(ListAPIView):
+    serializer_class = TutorApplicationViewSerializer
+
+    def get_queryset(self):
+        user_id = self.kwargs['id']
+        queryset = TutorApplication.objects.filter(user_id=user_id)
+        return queryset
+
+
+
 
 class CheckPreviousSubmissionView(APIView):
-    def get(self, request):
-        user = request.user
+    def get(self, request,user_id):
+        
     
         try:
-            previous_submission = TutorApplication.objects.get(user=user)
+            previous_submission = TutorApplication.objects.get(user__id=user_id)
             serializer = TutorApplicationSerializer(previous_submission)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except TutorApplication.DoesNotExist:

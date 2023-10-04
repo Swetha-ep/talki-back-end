@@ -34,9 +34,9 @@ ROLE_CHOICES = [
 ]
 
 LEVEL_CHOICES = [
-    ('beginner', 'Beginner'),
-    ('intermediate', 'Intermediate'),
-    ('advanced', 'Advanced'),
+    ('beginner', 'beginner'),
+    ('intermediate', 'intermediate'),
+    ('advanced', 'advanced'),
 ]
 
 class User(AbstractBaseUser):
@@ -45,7 +45,7 @@ class User(AbstractBaseUser):
     date_registered = models.DateTimeField(auto_now_add=True)
     user_role = models.CharField(max_length=10,default='user', choices=ROLE_CHOICES)
     is_vip = models.BooleanField(default=False)
-    profile_picture = models.ImageField(upload_to='profile_pics/', default='profile_pics/default.png', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     user_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, blank=True)
     is_google = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
