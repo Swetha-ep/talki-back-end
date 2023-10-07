@@ -1,5 +1,5 @@
 from rest_framework_simplejwt.views import TokenObtainPairView
-from Accounts.serializers import TutorApplicationSerializer, UserRegistrationSerializer
+from Accounts.serializers import *
 from server import settings
 from .serializers import *
 from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView,ListAPIView,UpdateAPIView
@@ -56,15 +56,16 @@ class UserUnblockView(generics.UpdateAPIView):
 
 
 class ApplicationList(ListAPIView):
-    serializer_class = TutorApplicationSerializer
+    serializer_class = TutorApplicationViewSerializer
     search_fields = ['name','phone','email']
     queryset = TutorApplication.objects.all()
+    
 
 
 
 class ApplicationDetailView(generics.RetrieveAPIView):
     queryset = TutorApplication.objects.all()
-    serializer_class = TutorApplicationSerializer
+    serializer_class = TutorApplicationViewSerializer
 
    
 @api_view(["POST"])

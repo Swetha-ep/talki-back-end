@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'social.apps.django_app.default',
     'Dashboard',
     'Trainer',
+    'storages',
 ]
 
 SITE_ID = 1
@@ -170,6 +171,16 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+
+# DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'  # If using Amazon S3
+# or
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'  # For local storage
+
+# # Configure Amazon S3 settings (if using S3)
+# AWS_STORAGE_BUCKET_NAME = 'your-s3-bucket-name'
+# AWS_ACCESS_KEY_ID = 'your-access-key-id'
+# AWS_SECRET_ACCESS_KEY = 'your-secret-access-key'
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

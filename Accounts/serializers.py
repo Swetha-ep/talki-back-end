@@ -14,6 +14,12 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             'password': {'write_only': True}
         }
 
+class UserEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','username', 'email', 'user_level','profile_picture', ]
+        
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

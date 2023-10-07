@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 from django.shortcuts import render
 from .serializers import *
-from .models import User
+from .models import LEVEL_CHOICES, User
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -116,11 +116,17 @@ def google_oauth2_auth(request, backend):
 
 
 
-
 class UserProfileDetail(generics.RetrieveUpdateAPIView):
     queryset = User.objects.all()
-    serializer_class = UserRegistrationSerializer
-   
+    serializer_class = UserEditSerializer
+
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance)      
+        data = serializer.data
+        data["level_choices"] = [{"label": choice[1]} for choice in LEVEL_CHOICES]
+
+        return Response(data)
     
  
 
