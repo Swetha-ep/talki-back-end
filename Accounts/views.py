@@ -160,11 +160,9 @@ class TutorApplicationRetrieve(ListAPIView):
 
 
 
-
 class CheckPreviousSubmissionView(APIView):
     def get(self, request,user_id):
-        
-    
+   
         try:
             previous_submission = TutorApplication.objects.get(user__id=user_id)
             serializer = TutorApplicationSerializer(previous_submission)

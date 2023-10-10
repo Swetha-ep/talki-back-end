@@ -18,6 +18,11 @@ urlpatterns = [
    path('decline_application/<int:application_id>/', views.decline_application, name='decline_application'),
    
    path('trainers/', TrainerListView.as_view(), name='trainer-list'),
- 
+   path('user-application/<int:user_id>/', UserApplicationView.as_view(), name='user-application-detail'),
+
+   path('trainer-vip/<int:pk>/',TrainerVipView.as_view(),name="trainer-vip"),
+   path('trainer-nonvip/<int:pk>/',TrainerNonVipView.as_view(),name="trainer-nonvip"),
+   path('trainer-block/<int:pk>/',TrainerBlockView.as_view(), name="trainer-block"),
+   path('trainer-unblock/<int:pk>/',TrainerUnblockView.as_view(), name="trainer-unblock"),
  
 ]

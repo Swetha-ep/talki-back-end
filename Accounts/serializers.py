@@ -9,7 +9,7 @@ from rest_framework.serializers import ModelSerializer
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'password','user_level', ]
+        fields = ['id','username', 'email', 'password','user_level', 'is_trainer']
         extra_kwargs = {
             'password': {'write_only': True}
         }
@@ -19,6 +19,7 @@ class UserEditSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','username', 'email', 'user_level','profile_picture', ]
         
+
 
 
 class UserLoginSerializer(serializers.Serializer):
@@ -53,6 +54,7 @@ class TutorApplicationViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = TutorApplication
         fields = '__all__'
+
 
 
         

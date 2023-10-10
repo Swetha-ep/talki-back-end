@@ -12,7 +12,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 
 
 
@@ -32,7 +32,6 @@ class UsersList(ListAPIView):
 class UserBlockView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-    # permission_classes = [IsAdminUser]
 
     def update(self, request, *args, **kwargs):
         user = self.get_object()
@@ -44,7 +43,6 @@ class UserBlockView(generics.UpdateAPIView):
 class UserUnblockView(generics.UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegistrationSerializer
-    # permission_classes = [IsAdminUser]
 
     def update(self, request, *args, **kwargs):
         user = self.get_object()
@@ -67,6 +65,7 @@ class ApplicationDetailView(generics.RetrieveAPIView):
     queryset = TutorApplication.objects.all()
     serializer_class = TutorApplicationViewSerializer
 
+
    
 @api_view(["POST"])
 def accept_application(request, application_id):
@@ -78,6 +77,7 @@ def accept_application(request, application_id):
         application.save()
 
         user = application.user
+        user.is_trainer = True
         user.user_role = 'trainer'
         user.save()
 
@@ -139,5 +139,63 @@ def decline_application(request, application_id):
 
 class TrainerListView(generics.ListAPIView):
     queryset = User.objects.filter(user_role='trainer')
+    serializer_class = UsersListSerializer
+
+
+class UserApplicationView(generics.RetrieveAPIView):
+    serializer_class = TutorApplicationViewSerializer
+
+    def get_object(self):
+        user_id = self.kwargs.get('user_id')
+
+        try:
+            application = TutorApplication.objects.get(user_id=user_id)
+            return application
+        except TutorApplication.DoesNotExist:
+            raise Http404("TutorApplication does not exist")
+
+
+
+class TrainerVipView(generics.UpdateAPIView):
+    queryset = User.objects.filter(user_role='trainer')
     serializer_class = UserRegistrationSerializer
 
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_Tvip = True
+        user.save()
+        return Response({'message' : 'Selected as VIP trainer'},status= status.HTTP_200_OK)
+    
+
+class TrainerNonVipView(generics.UpdateAPIView):
+    queryset = User.objects.filter(user_role='trainer')
+    serializer_class = UserRegistrationSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_Tvip = False
+        user.save()
+        return Response({'message' : 'Selected as non-VIP trainer'},status= status.HTTP_200_OK)
+
+
+
+class TrainerBlockView(generics.UpdateAPIView):
+    queryset = User.objects.filter(user_role='trainer')
+    serializer_class = UserRegistrationSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_trainer = False
+        user.save()
+        return Response({'message': 'User blocked successfully'}, status=status.HTTP_200_OK)
+    
+
+class TrainerUnblockView(generics.UpdateAPIView):
+    queryset = User.objects.filter(user_role = 'trainer')
+    serializer_class = UserRegistrationSerializer
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.is_trainer = True
+        user.save()
+        return Response({'message': 'User unblocked successfully'}, status=status.HTTP_200_OK)

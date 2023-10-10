@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
-# Create your models here.
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -50,6 +49,10 @@ class User(AbstractBaseUser):
     is_google = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_trainer = models.BooleanField(default=False)
+    is_online =  models.BooleanField(default=False)
+    is_Tvip = models.BooleanField(default=False)
+
  
     objects = CustomUserManager()
 
