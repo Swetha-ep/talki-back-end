@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 class CustomUserManager(BaseUserManager):
@@ -13,9 +13,8 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        
         extra_fields.setdefault("is_active", True)
-        extra_fields.setdefault("is_staff ", True)
+        extra_fields.setdefault("is_staff", True)  
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("user_role", 'admin')
 
@@ -38,7 +37,7 @@ LEVEL_CHOICES = [
     ('advanced', 'advanced'),
 ]
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser,PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, blank=True)
     date_registered = models.DateTimeField(auto_now_add=True)
@@ -47,7 +46,7 @@ class User(AbstractBaseUser):
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     user_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, blank=True)
     is_google = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
     is_trainer = models.BooleanField(default=False)
     is_online =  models.BooleanField(default=False)
@@ -66,6 +65,7 @@ class User(AbstractBaseUser):
 class TutorApplication(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
+    country = models.CharField(default='India')
     phone = models.CharField()  
     about_me = models.TextField()
     teaching_style = models.TextField()

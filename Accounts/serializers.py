@@ -17,7 +17,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserEditSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'user_level','profile_picture', ]
+        fields = ['id','username', 'email', 'user_level','profile_picture','is_online' ]
         
 
 
@@ -37,6 +37,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['user_role'] = user.user_role
         token['is_vip'] = user.is_vip
         token['is_active'] = user.is_active
+        token['is_trainer'] = user.is_trainer
+        token['is_online'] = user.is_online
        
         return token
     

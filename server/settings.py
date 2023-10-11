@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'english',
+        'NAME': 'talkii',
         'USER': 'postgres',
         'PASSWORD':'admin',
         'HOST':'localhost',
