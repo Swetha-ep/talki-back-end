@@ -13,6 +13,7 @@ from rest_framework.permissions import IsAdminUser
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.http import Http404, JsonResponse
+from django.db.models import Q
 
 
 
@@ -199,3 +200,8 @@ class TrainerUnblockView(generics.UpdateAPIView):
         user.is_trainer = True
         user.save()
         return Response({'message': 'User unblocked successfully'}, status=status.HTTP_200_OK)
+    
+
+class TrainerOnlineListView(generics.ListAPIView):
+    queryset = User.objects.filter(Q(user_role='trainer') & Q(is_online=True))
+    serializer_class = UsersListSerializer

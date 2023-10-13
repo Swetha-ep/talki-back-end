@@ -15,9 +15,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         }
 
 class UserEditSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'user_level','profile_picture','is_online' ]
+        fields = ['id','username', 'email', 'user_level','profile_picture','is_online']
         
 
 
@@ -52,7 +53,7 @@ class TutorApplicationSerializer(serializers.ModelSerializer):
 
 
 class TutorApplicationViewSerializer(serializers.ModelSerializer):
-    user = UserRegistrationSerializer()
+    user = UserEditSerializer()
     class Meta:
         model = TutorApplication
         fields = '__all__'
