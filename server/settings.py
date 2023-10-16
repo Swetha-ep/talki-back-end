@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'server.wsgi.application'
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'talkii',
+        'NAME': 'project2',
         'USER': 'postgres',
         'PASSWORD':'admin',
         'HOST':'localhost',
@@ -202,27 +202,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-# CELERY_BROKER_URL = 'redis://localhost:6379/0' 
-# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-
-# CELERY_TIMEZONE = 'UTC'
-# CELERY_ENABLE_UTC = True
-# CELERY_IMPORTS = ('accounts.tasks',) 
-
-# CELERY_ACCEPT_CONTENT = ['json']
-# CELERY_TASK_SERIALIZER = 'json'
-# CELERY_RESULT_SERIALIZER = 'json'
-
-# CELERY_BEAT_SCHEDULE = {
-#     'your-task-name': {
-#         'task': 'Accounts.tasks.your_task',  
-#         'schedule': crontab(minute=0, hour=0), 
-#     },
-# }
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     # Add other authentication backends if needed

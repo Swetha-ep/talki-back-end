@@ -19,7 +19,10 @@ urlpatterns = [
 
     path('submit-application/', TutorApplicationCreateView.as_view(), name='submit-tutor-application'),
     path('viewapplication/<int:id>', TutorApplicationRetrieve.as_view(), name='TutorApplicationRetrieve'),
-    path('check-previous-submission/<int:id>', CheckPreviousSubmissionView.as_view(), name='check-previous-submission'),
+    # path('check-previous-submission/<int:id>', CheckPreviousSubmissionView.as_view(), name='check-previous-submission'),
+    path('trainer-connect/<int:sender_id>/<int:recipient_id>/', views.RequestCreateView, name='trainer-connect'),
+    path('senders-for-recipient/<int:recipient_id>/', Senders.as_view(), name='senders-for-recipient'),
+
     
     
     

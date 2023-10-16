@@ -1,7 +1,7 @@
 from urllib.parse import urlencode
 from django.shortcuts import render
 from .serializers import *
-from .models import LEVEL_CHOICES, User
+from .models import LEVEL_CHOICES, Requests, User
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -160,12 +160,43 @@ class TutorApplicationRetrieve(ListAPIView):
 
 
 
-class CheckPreviousSubmissionView(APIView):
-    def get(self, request,user_id):
-   
+
+@api_view(['POST'])
+def RequestCreateView(request, sender_id, recipient_id):
+    try:
+        sender = User.objects.get(pk=sender_id)
+        recipient = User.objects.get(pk=recipient_id)
+    except User.DoesNotExist:
+        return Response({'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+    if sender.is_vip:
+        request_instance = Requests.objects.create(sender=sender, recipient=recipient)
+        return Response({'message': 'Connection request sent successfully.'}, status=status.HTTP_201_CREATED)
+    else:
+        if recipient.is_Tvip:
+            return Response({'message': 'You are not a VIP user to connect this trainer.'}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            request_instance = Requests.objects.create(sender=sender, recipient=recipient)
+            return Response({'message': 'Connection request sent successfully.'}, status=status.HTTP_201_CREATED)
+
+
+
+class Senders(ListAPIView):
+    def get_queryset(self):
+        recipient_id = self.kwargs['recipient_id']
         try:
-            previous_submission = TutorApplication.objects.get(user__id=user_id)
-            serializer = TutorApplicationSerializer(previous_submission)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except TutorApplication.DoesNotExist:
-            return ''
+            recipient = User.objects.get(pk=recipient_id)
+        except User.DoesNotExist:
+            return []
+        return Requests.objects.filter(recipient = recipient)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset:
+            return Response({'message' : 'Trainer does not exist'})
+        
+        senders = [request.sender for request in queryset]
+        sender_data = UserEditSerializer(senders,many=True)
+
+        return Response({'senders': sender_data.data})
+    
