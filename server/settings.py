@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     'Dashboard',
     'Trainer',
     'storages',
+    'payment',
+    'razorpay',
 ]
 
 SITE_ID = 1
@@ -110,10 +112,16 @@ DATABASES = {
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True 
 
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
 CORS_ALLOWED_ORIGINS = [ 
+    
     "http://localhost:3000",
-    'http://127.0.0.1:8000', 
+    "http://127.0.0.1:8000",
+     
 ]
+
+
 
 
 
@@ -237,3 +245,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+RAZORPAY_KEY_ID=os.environ.get("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET=os.environ.get("RAZORPAY_KEY_SECRET")
