@@ -76,48 +76,6 @@ class CreateOrderAPIView(APIView):
         
 
 
-# class TransactionAPIView(View):
-#     print('daxos')
-#     @csrf_exempt
-#     def post(self, request, user_id):
-       
-        # user = get_object_or_404(User, id=user_id)
-        # transaction_serializer = TransactionModelSerializer(data=request.data)
-
-        # if transaction_serializer.is_valid():
-            
-        #     rz_client = razorpay.Client(auth=("rzp_test_BYEW8iXywrLllV", "1Q3UJAXfMt4vxU6Az9PlrjdY"))
-
-            
-        #     try:
-        #         rz_client.utility.verify_payment_signature({
-        #             "razorpay_signature": transaction_serializer.validated_data.get("signature"),
-        #             "razorpay_payment_id": transaction_serializer.validated_data.get("payment_id"),
-        #             "razorpay_order_id": transaction_serializer.validated_data.get("order_id"),
-        #         })
-        #     except Exception as e:
-        #         return JsonResponse({
-        #             "status_code": status.HTTP_400_BAD_REQUEST,
-        #             "message": "bad request",
-        #             "error": str(e)
-        #         }, status=status.HTTP_400_BAD_REQUEST)
-
-        #     # Save the transaction and update user status
-        #     transaction_serializer.save(user=user)
-        #     user.is_vip = True
-        #     user.save()
-
-        #     return JsonResponse({
-        #         "status_code": status.HTTP_201_CREATED,
-        #         "message": "transaction created"
-        #     }, status=status.HTTP_201_CREATED)
-        # else:
-        #     response = {
-        #         "status_code": status.HTTP_400_BAD_REQUEST,
-        #         "message": "bad request",
-        #         "error": transaction_serializer.errors
-        #     }
-        #     return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['POST'])
 def TransactionAPIView(request,user_id):

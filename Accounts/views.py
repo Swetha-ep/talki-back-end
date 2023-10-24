@@ -201,5 +201,42 @@ class Senders(ListAPIView):
         return Response({'senders': sender_data.data})
     
 
+class CheckRequestView(APIView):
+    def get(self, request, sender_id, recipient_id):
+        try:
+            sender = User.objects.get(pk=sender_id)
+            recipient = User.objects.get(pk=recipient_id)
+            
+            request_exists = Requests.objects.filter(sender=sender, recipient=recipient, status='pending').exists()
 
-    
+            return Response({'requestExists': request_exists}, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({'message': 'Request does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class WithdrawRequestView(APIView):
+   
+    def delete(self, request, sender_id, recipient_id):
+        try:
+            sender = User.objects.get(pk=sender_id)
+            recipient = User.objects.get(pk=recipient_id)
+            request_instance = Requests.objects.filter(sender=sender, recipient=recipient, status='pending').first()
+
+            if request_instance:
+                request_instance.delete()
+                return Response({'message': 'Request withdrawn successfully.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'message': 'No pending request found.'}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            return Response({'message': 'User does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def get_recipient_ids_for_sender(request, sender_id):
+    try:
+        sender_requests = Requests.objects.filter(sender=sender_id)
+        recipient_ids = sender_requests.values_list('recipient__id', flat=True)
+        
+        return Response({'recipient_ids': recipient_ids})
+    except Requests.DoesNotExist:
+        return Response({'error': 'No requests found for the sender.'})

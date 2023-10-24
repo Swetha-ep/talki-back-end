@@ -81,6 +81,8 @@ class TutorApplication(models.Model):
 class Requests(models.Model):
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_requests')
     recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_requests')
+    
+    
     status = models.CharField(
         max_length=20,
         choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('declined', 'Declined')],

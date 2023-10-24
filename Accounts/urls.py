@@ -22,8 +22,9 @@ urlpatterns = [
     # path('check-previous-submission/<int:id>', CheckPreviousSubmissionView.as_view(), name='check-previous-submission'),
     path('trainer-connect/<int:sender_id>/<int:recipient_id>/', views.RequestCreateView, name='trainer-connect'),
     path('senders-for-recipient/<int:recipient_id>/', Senders.as_view(), name='senders-for-recipient'),
-
-    
+    path('check-request/<int:sender_id>/<int:recipient_id>/', CheckRequestView.as_view(), name='check-request'),
+    path('withdraw-request/<int:sender_id>/<int:recipient_id>/', WithdrawRequestView.as_view(), name='withdraw-request'),
+    path('get_recipient_ids/<int:sender_id>/', views.get_recipient_ids_for_sender, name='get_recipient_ids_for_sender'),
     
     
 ]

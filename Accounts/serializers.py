@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, TutorApplication
+from .models import *
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 import re
@@ -26,6 +26,7 @@ class UserEditSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -60,4 +61,3 @@ class TutorApplicationViewSerializer(serializers.ModelSerializer):
 
 
 
-        
