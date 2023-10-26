@@ -24,6 +24,7 @@ path('accounts/', include('Accounts.urls')),
 path('dashboard/', include('Dashboard.urls')),
 path('trainer/', include('Trainer.urls')),
 path('payment/', include('payment.urls')),
+path('chat/', include('chat.urls')),
 
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

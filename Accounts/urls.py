@@ -25,6 +25,9 @@ urlpatterns = [
     path('check-request/<int:sender_id>/<int:recipient_id>/', CheckRequestView.as_view(), name='check-request'),
     path('withdraw-request/<int:sender_id>/<int:recipient_id>/', WithdrawRequestView.as_view(), name='withdraw-request'),
     path('get_recipient_ids/<int:sender_id>/', views.get_recipient_ids_for_sender, name='get_recipient_ids_for_sender'),
+
+    path('accept-request/<int:sender_id>/<int:receiver_id>/', views.AcceptRequestView.as_view(), name='accept_request'),
+    
     
     
 ]

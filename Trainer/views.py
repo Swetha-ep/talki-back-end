@@ -14,7 +14,7 @@ from rest_framework.decorators import api_view
 
 
 class TrainerOnlineView(generics.UpdateAPIView):
-    queryset = User.objects.filter(user_role = 'trainer')
+    queryset = User.objects.filter(user_role='trainer')
     serializer_class = UserRegistrationSerializer
 
     def update(self, request, *args, **kwargs):

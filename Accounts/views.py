@@ -41,10 +41,14 @@ from rest_framework import viewsets
 from rest_framework.generics import ListAPIView
 from rest_framework import generics
 from rest_framework.exceptions import NotFound
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .consumers import NotificationConsumer
+from channels.layers import get_channel_layer
+from django.db.models import Q
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
-
 
 class UserRegister(CreateAPIView):
     def get_serializer_class(self):
@@ -188,7 +192,7 @@ class Senders(ListAPIView):
             recipient = User.objects.get(pk=recipient_id)
         except User.DoesNotExist:
             return []
-        return Requests.objects.filter(recipient = recipient)
+        return Requests.objects.filter(recipient = recipient,status='pending')
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
@@ -220,7 +224,10 @@ class WithdrawRequestView(APIView):
         try:
             sender = User.objects.get(pk=sender_id)
             recipient = User.objects.get(pk=recipient_id)
-            request_instance = Requests.objects.filter(sender=sender, recipient=recipient, status='pending').first()
+            request_instance = Requests.objects.filter(
+                        Q(sender=sender, recipient=recipient, status='pending') |
+                        Q(sender=sender, recipient=recipient, status='accepted')
+                        ).first()
 
             if request_instance:
                 request_instance.delete()
@@ -234,9 +241,30 @@ class WithdrawRequestView(APIView):
 @api_view(['GET'])
 def get_recipient_ids_for_sender(request, sender_id):
     try:
-        sender_requests = Requests.objects.filter(sender=sender_id)
-        recipient_ids = sender_requests.values_list('recipient__id', flat=True)
-        
-        return Response({'recipient_ids': recipient_ids})
+        pending_ids = Requests.objects.filter(sender=sender_id,status='pending').values_list('recipient__id', flat=True)
+        accepted_ids =  Requests.objects.filter(sender=sender_id,status='accepted').values_list('recipient__id', flat=True)
+        print('-------------------->')
+        print(pending_ids)
+        print(accepted_ids)
+        print('-------------------->')
+        return Response({'pending_ids': pending_ids,'accepted_ids':accepted_ids})
     except Requests.DoesNotExist:
         return Response({'error': 'No requests found for the sender.'})
+    
+
+class AcceptRequestView(APIView):
+    @csrf_exempt
+    def post(self, request, sender_id, receiver_id):
+        try:
+            # Look up the request by sender_id and receiver_id
+            request_instance = Requests.objects.get(sender=sender_id, recipient=receiver_id)
+
+            # Check if the request is not found
+            if not request_instance:
+                return Response({"message": "Request not found"}, status=status.HTTP_404_NOT_FOUND)
+
+            request_instance.status = 'accepted'
+            request_instance.save()
+            return JsonResponse({'message':'sucess'})
+        except Exception as e:
+            return JsonResponse({"message": str(e)},status=400)
