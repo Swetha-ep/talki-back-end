@@ -14,7 +14,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.http import Http404, JsonResponse
 from django.db.models import Q
-
+from rest_framework.views import APIView
 
 
 class AdminTokenObtainPairView(TokenObtainPairView):
@@ -205,3 +205,35 @@ class TrainerUnblockView(generics.UpdateAPIView):
 class TrainerOnlineListView(generics.ListAPIView):
     queryset = User.objects.filter(Q(user_role='trainer') & Q(is_online=True))
     serializer_class = UsersListSerializer
+
+
+@api_view(['GET'])
+def user_status(request):
+   
+    vip_count = User.objects.filter(is_vip=True).count()
+    non_vip_count = User.objects.filter(is_vip=False).count()
+
+    
+    data = {
+        'vip_count': vip_count,
+        'non_vip_count': non_vip_count,
+    }
+
+    
+    serializer = UserStatusSerializer(data)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def trainer_status(request):
+
+    vip_trainers = User.objects.filter(is_Tvip=True, is_trainer=True).count()
+    non_vip_trainers = User.objects.filter(is_Tvip=False, is_trainer=True).count()
+
+    data={
+        'vip_trainers' : vip_trainers,
+        'non_vip_trainers' : non_vip_trainers,
+    }
+
+    serializer = TrainerStatusSerializer(data)
+    return Response(serializer.data)

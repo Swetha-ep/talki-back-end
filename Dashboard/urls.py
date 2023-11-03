@@ -25,5 +25,7 @@ urlpatterns = [
    path('trainer-block/<int:pk>/',TrainerBlockView.as_view(), name="trainer-block"),
    path('trainer-unblock/<int:pk>/',TrainerUnblockView.as_view(), name="trainer-unblock"),
    path('trainer-online/',TrainerOnlineListView.as_view(),name="trainer-online"),
- 
+   path('user-status/', views.user_status, name='user-status'),
+   path('trainer-status/', views.trainer_status, name='trainer-status'),
+
 ]

@@ -11,7 +11,14 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 import razorpay
+from rest_framework.viewsets import ModelViewSet
+from rest_framework import generics
 # Create your views here.
+
+class TransactionViewset(ModelViewSet):
+    serializer_class = TransactionModelSerializer
+    queryset = Transaction.objects.all()
+
 
 class RazorpayClient:
 
@@ -79,10 +86,11 @@ class CreateOrderAPIView(APIView):
 
 @api_view(['POST'])
 def TransactionAPIView(request,user_id):
+    print(request)
     if request.method == 'POST':
         user = get_object_or_404(User, id=user_id)
         transaction_serializer = TransactionModelSerializer(data=request.data)
-        print(user_id,'daxo')
+        print(user_id,'daxooooooo')
         print(transaction_serializer)
         if transaction_serializer.is_valid():
             
@@ -118,3 +126,12 @@ def TransactionAPIView(request,user_id):
                 "error": transaction_serializer.errors
             }
             return JsonResponse(response, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class PaymentDetails(generics.RetrieveUpdateAPIView):
+    # queryset= Payment.objects.all()
+    serializer_class = PaymentModelSerializer
+    def get_object(self):
+        return Payment.objects.first()
+    

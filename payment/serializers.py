@@ -6,7 +6,14 @@ class CreateOrderSerializer(serializers.Serializer):
     currency = serializers.CharField()
 
 class TransactionModelSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Transaction
-        fields = ["payment_id", "order_id", "signature" , "amount"]
+        # fields = ['payment_id','order_id','signature','amount', 'user']
+        fields = '__all__'
+
+
+class PaymentModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        fields = ["name", "price", "duration" ]

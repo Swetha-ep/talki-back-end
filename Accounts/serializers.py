@@ -18,10 +18,13 @@ class UserEditSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ['id','username', 'email', 'user_level','profile_picture','is_online']
+        fields = ['id','username', 'email', 'user_level','profile_picture','is_online', 'is_vip']
         
 
-
+class UserVipDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_vip']
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

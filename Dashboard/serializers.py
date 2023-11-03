@@ -31,3 +31,16 @@ class ApplicationListSerializer(ModelSerializer):
         model = TutorApplication
 
 
+class UserStatusSerializer(serializers.Serializer):
+    vip_count = serializers.IntegerField()
+    non_vip_count = serializers.IntegerField()
+
+
+class TrainerStatusSerializer(serializers.Serializer):
+    vip_trainers = serializers.IntegerField()
+    non_vip_trainers = serializers.IntegerField()
+
+
+
+
+

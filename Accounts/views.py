@@ -23,6 +23,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .models import User,TutorApplication
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
+
 from django.template.loader import render_to_string
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes
@@ -67,7 +68,7 @@ class UserRegister(CreateAPIView):
             uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
             token = default_token_generator.make_token(user)
             token_bytes = urlsafe_base64_encode(force_bytes(token))
-            activation_url = reverse('activate', args=[uidb64, token])
+            activation_url = reverse('activate', args=[uidb64, token]).strip('/')
             current_site = Site.objects.get_current()
             backendurl = config('backendUrl')
             current_site.domain = backendurl
@@ -83,7 +84,7 @@ class UserRegister(CreateAPIView):
                     'token': token,
                 }
             )
-            from_email = settings.EMAIL_HOST_USER  # Make sure EMAIL_HOST_USER is properly configured in your settings
+            from_email = settings.EMAIL_HOST_USER 
             to_email = email
             send_mail(mail_subject, message, from_email, [to_email])
             return Response({'message': 'Registration successful. Please check your email for activation instructions.'}, status=status.HTTP_201_CREATED)
@@ -131,6 +132,12 @@ class UserProfileDetail(generics.RetrieveUpdateAPIView):
         data["level_choices"] = [{"label": choice[1]} for choice in LEVEL_CHOICES]
 
         return Response(data)
+    
+
+class UserVipDetail(generics.RetrieveAPIView):
+    queryset= User.objects.all()
+    serializer_class=UserVipDetailSerializer
+    
     
  
 
@@ -268,3 +275,65 @@ class AcceptRequestView(APIView):
             return JsonResponse({'message':'sucess'})
         except Exception as e:
             return JsonResponse({"message": str(e)},status=400)
+        
+
+
+class ForgotPassword(APIView):
+    def post(self,request):
+        email = request.data.get('email')
+
+        if User.objects.filter(email=email).exists():
+            user = User.objects.get(email__exact=email)
+            current_site = get_current_site(request)
+            mail_subject = 'Click this link to change your password'
+            message = render_to_string('user/forgotpassword.html',{
+                'user' : user,
+                'domain' : current_site,
+                'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
+                'token' : default_token_generator.make_token(user),
+                'site' : current_site
+            })
+
+            to_email = email
+            send_mail = EmailMessage(mail_subject,message,to=[to_email])
+            send_mail.send()
+
+            return Response(
+                data={
+                    'message' : 'verification email has been sent to your email address',
+                    'user_id' : user.id,
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                data={'message' : 'No account found'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+@api_view(['GET'])
+def reset_validate(request,uidb64,token): 
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User._default_manager.get(pk=uid)
+    except(TypeError,ValueError,User.DoesNotExist):
+        user = None
+
+    if user is not None and default_token_generator.check_token(user,token):
+       redirect_url = f'http://localhost:3000/resetpassword/?user_id={user.id}'
+       return HttpResponseRedirect(redirect_url)
+       return HttpResponseRedirect(f'{"http://localhost:3000/"}resetpassword/',{user_id:user.id}) 
+    
+
+class ResetPassword(APIView):
+    def post(self,request,format=None):
+        user_id = request.query_params.get('user_id')
+        uid = int(user_id)
+        password = request.data.get('password')
+        if uid:
+            user = User.objects.get(id=uid)
+            user.set_password(password)
+            user.save()
+            return Response(data={'message':'Password have reset successfully'})
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
