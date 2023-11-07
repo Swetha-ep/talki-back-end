@@ -24,7 +24,7 @@ class UserEditSerializer(serializers.ModelSerializer):
 class UserVipDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['is_vip']
+        fields = ['is_vip','user_role']
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

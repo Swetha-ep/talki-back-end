@@ -27,7 +27,7 @@ class UsersList(ListAPIView):
     filter_backends = [SearchFilter]
     search_fields = ['email','username','user_role']
     pagination_class = PageNumberPagination
-    queryset = User.objects.filter(user_role='user').exclude(is_staff=True).order_by('-id')
+    queryset = User.objects.filter(is_trainer=False).exclude(is_staff=True).order_by('-id')
 
 
 class UserBlockView(generics.UpdateAPIView):

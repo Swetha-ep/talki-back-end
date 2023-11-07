@@ -13,7 +13,7 @@ urlpatterns = [
     path('register/', UserRegister.as_view(), name='user_register'),
     path('forgotpassword/', ForgotPassword.as_view(),name = 'forgot-password'),
     path('reset_validate/<uidb64>/<token>/',views.reset_validate, name='reset_validate'),
-    path('reset-password/<int:user_id>', ResetPassword.as_view()),
+    path('reset-password/<str:uidb64>/', ResetPassword.as_view()),
 
     path('auth/', include('social_django.urls', namespace='social')),
     path('auth/google/', views.google_oauth2_auth, name='google-oauth2-auth', kwargs={'backend': 'google-oauth2'}),
@@ -32,8 +32,7 @@ urlpatterns = [
 
     path('accept-request/<int:sender_id>/<int:receiver_id>/', AcceptRequestView.as_view(), name='accept_request'),
     path('user-vip/<int:pk>/', UserVipDetail.as_view(), name='user-vip'),
-    
-    
+   
     
 ]
 

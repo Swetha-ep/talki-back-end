@@ -285,13 +285,15 @@ class ForgotPassword(APIView):
         if User.objects.filter(email=email).exists():
             user = User.objects.get(email__exact=email)
             current_site = get_current_site(request)
+            domain = current_site.domain.rstrip('/')
+
             mail_subject = 'Click this link to change your password'
             message = render_to_string('user/forgotpassword.html',{
                 'user' : user,
-                'domain' : current_site,
+                'domain' : domain,
                 'uid' : urlsafe_base64_encode(force_bytes(user.pk)),
                 'token' : default_token_generator.make_token(user),
-                'site' : current_site
+                'site' : domain
             })
 
             to_email = email
@@ -320,20 +322,22 @@ def reset_validate(request,uidb64,token):
         user = None
 
     if user is not None and default_token_generator.check_token(user,token):
-       redirect_url = f'http://localhost:3000/resetpassword/?user_id={user.id}'
+       redirect_url = f'http://localhost:3000/resetpassword/?key={uidb64}/?t={token}/'
        return HttpResponseRedirect(redirect_url)
-       return HttpResponseRedirect(f'{"http://localhost:3000/"}resetpassword/',{user_id:user.id}) 
     
 
+
 class ResetPassword(APIView):
-    def post(self,request,format=None):
-        user_id = request.query_params.get('user_id')
-        uid = int(user_id)
+    def post(self, request,uidb64, format=None):
         password = request.data.get('password')
-        if uid:
-            user = User.objects.get(id=uid)
-            user.set_password(password)
-            user.save()
-            return Response(data={'message':'Password have reset successfully'})
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
+        if uidb64 and password:  
+            try:
+                user_id = urlsafe_base64_decode(uidb64).decode()
+                user = User.objects.get(id=user_id)
+                user.set_password(password)
+                user.save()
+                return Response(data={'message': 'Password has been reset successfully'})
+            except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+                return Response(data={'message': 'Invalid token or user'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={'message': 'Token or password not provided'}, status=status.HTTP_400_BAD_REQUEST)
