@@ -32,6 +32,8 @@ class TrainerOfflineView(generics.UpdateAPIView):
         user = self.get_object()
         user.is_online = False
         user.save()
+        requests = Requests.objects.filter(recipient=user)
+        requests.delete()
         return Response({'message' : 'You are Offline now !'}, status=status.HTTP_200_OK)
     
 
