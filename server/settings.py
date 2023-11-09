@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from datetime import timedelta
 import os
 from pathlib import Path
+from decouple import config
 # from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -23,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-&#uwr^i+w_&^z=(=4ww+uh3u+#_7g8d6_b!67+_mr%s7hjbzm='
+SECRET_KEY = config("secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -102,7 +103,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [ config('redis')],
         },
     },
 }
@@ -113,13 +114,15 @@ CHANNEL_LAYERS = {
 DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'project2',
-        'USER': 'postgres',
-        'PASSWORD':'admin',
-        'HOST':'localhost',
-        'PORT':'5432',
+        'NAME': config('db_name'),
+        'USER':config('db_user'),
+        'PASSWORD':config('db_password'),
+        'HOST':config('db_host'),
+        'PORT':config('db_port'),
     }
 }
+
+# postgres://talki_user:uaL4JRN5rVNKHPZXkKBp4DqPh1q0cbPF@dpg-cl6ahfk72pts73ftj610-a.oregon-postgres.render.com/talki
 
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -231,20 +234,14 @@ AUTHENTICATION_BACKENDS = (
 )
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'violet.store.she@gmail.com'
-EMAIL_HOST_PASSWORD = 'cpat tbeu cscv kwco'
+EMAIL_BACKEND = config("EMAIL_BACKEND")
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", "")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 # 'cpat tbeu cscv kwco'
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '122134654516-tnugrm8rns5u8n0oqc9ia58vtm5nvhqf.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
-# LOGIN_URL = 'login'  
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/path/to/redirect-after-login/'   
-
-
+   
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
@@ -260,5 +257,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR / 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-RAZORPAY_KEY_ID=os.environ.get("RAZORPAY_KEY_ID")
-RAZORPAY_KEY_SECRET=os.environ.get("RAZORPAY_KEY_SECRET")
+RAZORPAY_KEY_ID=config("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET=config("RAZORPAY_KEY_SECRET")
