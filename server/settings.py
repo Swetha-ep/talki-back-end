@@ -111,18 +111,18 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': config('Database'),
-        # 'USER':config('Username'),
-        'USER':'postgres',
-        # 'PASSWORD':config('Password'),
-        'PASSWORD':'admin',
-        'HOST':config('Hostname'),
-        'PORT':config('Port'),
+        'USER': config('DB_User'),
+        'PASSWORD': config('Password'),
+        'HOST': config('Hostname'),
+        'PORT': config('Port'),
     }
 }
+
 
 # postgres://talki_user:uaL4JRN5rVNKHPZXkKBp4DqPh1q0cbPF@dpg-cl6ahfk72pts73ftj610-a.oregon-postgres.render.com/talki
 
