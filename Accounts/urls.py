@@ -33,6 +33,8 @@ urlpatterns = [
     path('accept-request/<int:sender_id>/<int:receiver_id>/', AcceptRequestView.as_view(), name='accept_request'),
     path('user-vip/<int:pk>/', UserVipDetail.as_view(), name='user-vip'),
    
-    
+    path('rate-trainer/',RateTrainer.as_view(), name= 'rate'),
+    path('trainer-rating/',AverageRatingView.as_view(), name= 'average-ratings'),
+
 ]
 

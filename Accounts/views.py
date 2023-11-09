@@ -9,17 +9,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from django.shortcuts import HttpResponseRedirect
-from django.contrib.auth import authenticate
+
 from rest_framework.decorators import api_view
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMessage
 from django.http import JsonResponse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
+from django.utils.encoding import force_bytes
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from rest_framework.decorators import permission_classes
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.db.models import Avg
 from .models import User,TutorApplication
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
@@ -30,22 +28,18 @@ from django.utils.encoding import force_bytes
 from django.urls import reverse
 from django.shortcuts import redirect
 from social_django.utils import psa
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
+
 from rest_framework.views import APIView
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from decouple import config
-from rest_framework import viewsets
+
 from rest_framework.generics import ListAPIView
 from rest_framework import generics
-from rest_framework.exceptions import NotFound
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-from .consumers import NotificationConsumer
-from channels.layers import get_channel_layer
+
+
 from django.db.models import Q
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -341,3 +335,38 @@ class ResetPassword(APIView):
                 return Response(data={'message': 'Invalid token or user'}, status=status.HTTP_400_BAD_REQUEST)
         else:
             return Response(data={'message': 'Token or password not provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+
+class RateTrainer(generics.CreateAPIView):
+    queryset = Rating.objects.all()
+    serializer_class = RatingSerializer
+
+    def post(self, request, *args, **kwargs):    
+        serializer = RatingSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                data={'message': 'Rated successfully'},
+                status=status.HTTP_201_CREATED
+            )
+        return Response(
+            serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
+    
+
+class AverageRatingView(APIView):
+    def get(self,request):
+        trainers = User.objects.filter(rated_person__isnull=False).distinct()
+        ratings = []
+        for trainer in trainers:
+            average_rating = Rating.objects.filter(trainer=trainer).aggregate(Avg('rating'))['rating__avg']
+            if average_rating is not None:
+                data = {
+                    'trainer_id' : trainer.id,
+                    'trainer_username' : trainer.username,
+                    'average_rating' : average_rating
+                }
+                ratings.append(data)
+        serializer = TrainerRatingsSerializer(ratings, many=True)
+        return Response(serializer.data)

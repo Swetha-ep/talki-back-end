@@ -92,18 +92,10 @@ class Requests(models.Model):
         return f"Request from {self.sender.username} to {self.recipient.username}"
 
     
+class Rating(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True, related_name='rating_person')
+    trainer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='rated_person')
+    rating = models.IntegerField()
 
-# class ChatMessages(models.Model):
-#     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-#     reciever = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reciever')
-#     message = models.CharField(max_length=1000)
-#     is_read = models.BooleanField(default=False)
-#     date = models.DateTimeField(auto_now_add=True)
-
-#     class Meta:
-#         ordering = ['date']
-#         verbose_name_plural = "Message"
-
-#     def __str__(self):
-#         return f"Message from {self.sender.username} to {self.reciever.username}"
-    
+    def __str__(self):
+        return f"{self.trainer.username} - {self.rating}"

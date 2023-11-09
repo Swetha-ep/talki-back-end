@@ -63,4 +63,13 @@ class TutorApplicationViewSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class RatingSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Rating
+        fields = '__all__'
 
+class TrainerRatingsSerializer(serializers.Serializer):
+    trainer_id = serializers.IntegerField()
+    trainer_username = serializers.CharField()
+    average_rating = serializers.FloatField()
