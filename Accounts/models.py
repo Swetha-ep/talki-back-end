@@ -65,7 +65,8 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 class TutorApplication(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    country = models.CharField(max_length=200, blank=True, null=True,default='India')
+    # country = models.CharField(max_length=200, blank=True, null=True,default='India')
+    country = models.CharField(max_length=255, blank=True, null=True)
     name = models.CharField(max_length=255,blank=True, null=True)
     phone = models.CharField(max_length=200)  
     about_me = models.TextField()
