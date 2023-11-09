@@ -65,12 +65,15 @@ class User(AbstractBaseUser,PermissionsMixin):
 
 class TutorApplication(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=200)  
+    country = models.CharField(max_length=100,null=True)
+    name = models.CharField(max_length=100,null=True)
+    phone = models.CharField(max_length=200,null=True)  
     about_me = models.TextField()
     teaching_style = models.TextField() 
     work_experience = models.TextField()
     education = models.TextField()
     status = models.CharField(max_length=20, choices=[('pending', 'pending'), ('accepted', 'accepted'), ('declined', 'declined')], default='pending')
+   
 
     def __str__(self):
         return self.name
