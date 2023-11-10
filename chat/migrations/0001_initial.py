@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
             name='Message',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('sender', models.CharField(null=True)),
+                ('sender', models.CharField(max_length=200, null=True)),
                 ('message', models.TextField(null=True)),
                 ('thread_name', models.CharField(max_length=200, null=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
