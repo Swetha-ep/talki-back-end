@@ -41,6 +41,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['username'] = user.username
         token['user_role'] = user.user_role
         token['is_vip'] = user.is_vip
+        token['is_Tvip'] = user.is_Tvip
         token['is_active'] = user.is_active
         token['is_trainer'] = user.is_trainer
         token['is_online'] = user.is_online
