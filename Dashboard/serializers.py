@@ -9,7 +9,7 @@ class AdminTokenObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user):
         token = super().get_token(user)
         token['user_id'] = user.id
-        token['role'] = user.user_role
+        token['user_role'] = user.user_role
         token['is_staff'] = True
         return token
     
