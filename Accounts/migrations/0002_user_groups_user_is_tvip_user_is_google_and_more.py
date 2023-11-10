@@ -73,7 +73,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
-                ('country', models.CharField(default='India')),
+                ('country', models.CharField(max_length=255, null=True, blank=True, default='India')),
                 ('phone', models.CharField()),
                 ('about_me', models.TextField()),
                 ('teaching_style', models.TextField()),
