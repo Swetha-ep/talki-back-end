@@ -97,11 +97,11 @@ class Activate(APIView):
                     message = 'Congrats! Account activated!'
 
                     
-                    redirect_url = f'http://localhost:3000/login/?{urlencode({"message": message})}'
+                    redirect_url = f'https://talki-alpha.vercel.app/login/?{urlencode({"message": message})}'
                     
             else:
                 message = 'Invalid activation link'
-                redirect_url = f'http://localhost:3000/login/?{urlencode({"message": message})}'
+                redirect_url = f'https://talki-alpha.vercel.app/login/?{urlencode({"message": message})}'
 
             return HttpResponseRedirect(redirect_url)
         
@@ -316,7 +316,7 @@ def reset_validate(request,uidb64,token):
         user = None
 
     if user is not None and default_token_generator.check_token(user,token):
-       redirect_url = f'http://localhost:3000/resetpassword/?key={uidb64}/?t={token}/'
+       redirect_url = f'https://talki-alpha.vercel.app/resetpassword/?key={uidb64}/?t={token}/'
        return HttpResponseRedirect(redirect_url)
     
 
