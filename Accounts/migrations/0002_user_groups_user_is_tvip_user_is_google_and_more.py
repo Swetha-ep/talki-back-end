@@ -74,7 +74,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('country', models.CharField(max_length=255, null=True, blank=True, default='India')),
-                ('phone', models.CharField()),
+                ('phone', models.CharField(max_length=200, null=True, blank=True)),
                 ('about_me', models.TextField()),
                 ('teaching_style', models.TextField()),
                 ('work_experience', models.TextField()),
