@@ -38,6 +38,7 @@ from decouple import config
 
 from rest_framework.generics import ListAPIView
 from rest_framework import generics
+from .backendurl import *
 
 
 from django.db.models import Q
@@ -64,7 +65,7 @@ class UserRegister(CreateAPIView):
             token_bytes = urlsafe_base64_encode(force_bytes(token))
             activation_url = reverse('activate', args=[uidb64, token]).strip('/')
             current_site = Site.objects.get_current()
-            backendurl = config('backendUrl')
+            backendurl = backendUrl
             current_site.domain = backendurl
             current_site.save()
             mail_subject = 'Activate your account'
