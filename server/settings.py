@@ -63,7 +63,7 @@ INSTALLED_APPS = [
     'channels',
     'chat',
     'cloudinary',
-    'django-cloudinary-storage',
+    # 'django-cloudinary-storage',
 ]
 
 SITE_ID = 1
