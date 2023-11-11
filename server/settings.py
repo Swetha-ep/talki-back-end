@@ -14,6 +14,9 @@ from datetime import timedelta
 import os
 from pathlib import Path
 from decouple import config
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -57,6 +60,8 @@ INSTALLED_APPS = [
     'razorpay',
     'channels',
     'chat',
+    'cloudinary',
+    'django-cloudinary-storage',
 ]
 
 SITE_ID = 1
@@ -140,7 +145,14 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name=config("CLOUD_NAME"),
+    api_key=config("API_KEY"),
+    api_secret=config("API_SECRET")
+)
 
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 AUTH_PASSWORD_VALIDATORS = [
