@@ -17,6 +17,8 @@ from decouple import config
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+# from cloudinary_storage.storage import MediaCloudinaryStorage
+
 # from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
