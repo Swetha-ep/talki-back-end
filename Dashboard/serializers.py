@@ -20,7 +20,6 @@ class RequestViewSerializer(serializers.Serializer):
             
 
 class UsersListSerializer(ModelSerializer):
-
     class Meta:
         model = User
         exclude = ('password',)
